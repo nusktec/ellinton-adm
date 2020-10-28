@@ -105,10 +105,46 @@ $_SESSION['csr'] = sha1(time());
                                             <a href="#" data-toggle="modal" data-target="#importNewJson">
                                                 <i class="icon-receipt"></i> Import JSON
                                             </a>
-                                            <a target="_blank" href="export?cmd=export&ssk=<?php echo @$_SESSION['csr']; ?>">
+                                            <a target="_blank"
+                                               href="export?cmd=export&ssk=<?php echo @$_SESSION['csr']; ?>">
                                                 <i class="icon-export"></i> Export JSON (Backup)
                                             </a>
                                         </div>
+                                        <?php $item = $model->getDaily() ?>
+                                        <div class="card text-center overflow-hidden">
+                                            <div class="card-body">
+                                                <img class="m-3"
+                                                     src="https://ellingtonelectric.com/api/reedax/images/<?php echo $item['image'] ?>.jpg"
+                                                     alt="Card image cap" width="80px" height="80px">
+                                                <h5 class="card-title"><?php echo $item['author']; ?></h5>
+                                                <p class="card-text"
+                                                   style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"><?php echo $item['quote']; ?></p>
+                                                <!--                                                                <p class="card-text">-->
+                                                <!--                                                                    <small class="text-muted">Last updated 3 mins ago-->
+                                                <!--                                                                    </small>-->
+                                                <!--                                                                </p>-->
+                                                <p>
+                                                    <button onclick="photoEdit(<?php echo $item['image'] ?>)"
+                                                            type="button" class="btn btn-primary"><i
+                                                                class="icon-pencil"></i> Edit
+                                                    </button>
+                                                    <?php if ((int)$item['status'] === 0) { ?>
+                                                        <button onclick="if (confirm('Make this quote go live ?')){ window.location.href='api?cmd=go-live&target=<?php echo $item['image'] ?>&ssk=c7bbde24b87dfe0e201ec95ffc504dc6900ac5c4'}"
+                                                                type="button" class="btn btn-success"><i
+                                                                    class="<?php echo((int)$item['status'] === 0 ? 'icon-timer' : 'icon-check') ?>"></i>
+                                                            Go Live
+                                                        </button>
+                                                    <?php } else { ?>
+                                                        <button disabled="disabled" type="button"
+                                                                class="btn btn-success"><i
+                                                                    class="<?php echo((int)$item['status'] === 0 ? 'icon-timer' : 'icon-check') ?>"></i>
+                                                            Live Set
+                                                        </button>
+                                                    <?php } ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <?php ?>
                                     </div>
                                 </div>
 
@@ -225,7 +261,8 @@ $_SESSION['csr'] = sha1(time());
                                     </div>
                                 </div>
                                 <div class="documents-header">
-                                    <h3><?php echo count($quotes); ?> Quote(s) <span class="date" id="todays-date"></span></h3>
+                                    <h3><?php echo count($quotes); ?> Quote(s) and <?php echo number_format(count(scandir("../images"))-2)?> local images file(s)<span class="date"
+                                                                                     id="todays-date"></span></h3>
                                     <button class="btn btn-primary btn-lg" data-toggle="modal"
                                             data-target="#addNewDocument">Add New Quote
                                     </button>
@@ -260,18 +297,19 @@ $_SESSION['csr'] = sha1(time());
                                                                 <button onclick="if (confirm('Delete this quote ?')){ window.location.href='api?cmd=del-quote&target=<?php echo $item['image'] ?>&ssk=c7bbde24b87dfe0e201ec95ffc504dc6900ac5c4'}"
                                                                         type="button" class="btn btn-primary"><i
                                                                             class="icon-delete"></i></button>
-                                                                <?php if ((int)$item['status']===0){ ?>
-                                                                <button onclick="if (confirm('Make this quote go live ?')){ window.location.href='api?cmd=go-live&target=<?php echo $item['image'] ?>&ssk=c7bbde24b87dfe0e201ec95ffc504dc6900ac5c4'}"
-                                                                        type="button" class="btn btn-success"><i
-                                                                            class="<?php echo((int)$item['status'] === 0 ? 'icon-timer' : 'icon-check') ?>"></i>
-                                                                    Go Live
-                                                                </button>
-                                                                 <?php  }else{?>
-                                                                    <button disabled="disabled" type="button" class="btn btn-success"><i
+                                                                <?php if ((int)$item['status'] === 0) { ?>
+                                                                    <button onclick="if (confirm('Make this quote go live ?')){ window.location.href='api?cmd=go-live&target=<?php echo $item['image'] ?>&ssk=c7bbde24b87dfe0e201ec95ffc504dc6900ac5c4'}"
+                                                                            type="button" class="btn btn-success"><i
+                                                                                class="<?php echo((int)$item['status'] === 0 ? 'icon-timer' : 'icon-check') ?>"></i>
+                                                                        Go Live
+                                                                    </button>
+                                                                <?php } else { ?>
+                                                                    <button disabled="disabled" type="button"
+                                                                            class="btn btn-success"><i
                                                                                 class="<?php echo((int)$item['status'] === 0 ? 'icon-timer' : 'icon-check') ?>"></i>
                                                                         Live Set
                                                                     </button>
-                                                                <?php }?>
+                                                                <?php } ?>
                                                             </p>
                                                         </div>
                                                     </div>
