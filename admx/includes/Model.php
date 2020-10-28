@@ -92,14 +92,12 @@ class Model
         //start shuffling
         $rdFirst = DB::queryFirstRow("select * from quotes");
         $rdCurrent = DB::queryOneRow("select * from quotes where status=1");
-        var_dump($rdCurrent);
         $rdNextInt = DB::queryFirstRow("select * from quotes where id>" . $rdCurrent['id']);
         //check if that post will exist
         $chk = DB::queryOneRow("select * from quotes where id=" . ($rdNextInt['id'] ? $rdNextInt['id'] : 0));
         //compare current id
         if ($chk) {
             //update the current...
-            echo $rdNextInt['id'];
             $this->goLive(['target' => $chk['image']]);
         } else {
             $this->goLive(['target' => $rdFirst['image']]);
